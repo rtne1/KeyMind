@@ -98,6 +98,7 @@ namespace KeyMind
     internal sealed class SwitchControl : Control
     {
         private bool _checked;
+        [System.ComponentModel.DesignerSerializationVisibility(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public bool Checked { get { return _checked; } set { _checked = value; Invalidate(); } }
         public event EventHandler CheckedChanged;
         public SwitchControl(bool value)
