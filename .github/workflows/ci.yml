@@ -1,0 +1,49 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  static-tests:
+    name: Python reference and static checks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify package
+        run: python tests/verify_package.py
+      - name: Verify listener implementation
+        run: python tests/verify_background_listener.py
+      - name: Evaluate reference model
+        run: python tests/eval_accuracy.py
+
+  windows-build-and-test:
+    name: Windows compilation and engine parity
+    runs-on: windows-2022
+    steps:
+      - uses: actions/checkout@v4
+      - name: Compile with Windows Framework compiler
+        shell: pwsh
+        run: |
+          $csc = "$env:WINDIR\Microsoft.NET\Framework64\v4.0.30319\csc.exe"
+          if (!(Test-Path $csc)) { $csc = "$env:WINDIR\Microsoft.NET\Framework\v4.0.30319\csc.exe" }
+          if (!(Test-Path $csc)) { throw 'Windows .NET Framework C# compiler not found' }
+          $sources = @('src\Program.cs','src\SettingsStore.cs','src\Lexicon.cs','src\WordConverter.cs','src\KeyboardEngine.cs','src\MainForm.cs')
+          & $csc /nologo /target:winexe /optimize+ /platform:anycpu /codepage:65001 /win32icon:assets\keymind.ico /out:KeyMind.exe /reference:System.Windows.Forms.dll /reference:System.Drawing.dll /reference:System.Core.dll /reference:System.Runtime.Serialization.dll $sources
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          $testSources = @('src\SettingsStore.cs','src\Lexicon.cs','src\WordConverter.cs','src\KeyboardEngine.cs','src\Program.TestStub.cs','tests\SmokeTests.cs')
+          & $csc /nologo /target:exe /codepage:65001 /out:KeyMind.Tests.exe /reference:System.Core.dll /reference:System.Runtime.Serialization.dll /reference:System.Windows.Forms.dll $testSources
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          & .\KeyMind.Tests.exe
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+      - name: Build .NET 10 project
+        run: dotnet build KeyMind.csproj --configuration Release

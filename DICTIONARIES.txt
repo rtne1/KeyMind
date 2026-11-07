@@ -1,0 +1,31 @@
+HOW TO ADD MILLIONS OF WORDS TO KEYMIND
+=======================================
+1. Get word lists (sources below). Any of these shapes work:
+     counts   "word 12345"      (frequency list)
+     ordered  one word per line, most frequent first
+     list     plain words, or a Hunspell .dic
+     corpus   raw text (KeyMind counts the words for you)
+2. Build (needs Python 3; numpy optional but faster):
+     python tools\build_dictionary.py --lang ar --out data\ar-big --ordered ar_full.txt --corpus arwiki.txt --min-count 3
+     python tools\build_dictionary.py --lang en --out data\en-big --counts en_full.txt --list words_alpha.txt
+3. Restart KeyMind (START-KEYMIND.cmd). Files data\ar-big.kmd / .ngram are picked up automatically.
+   Small plain .txt lists can simply be dropped into data\extra\ as ar-something.txt / en-something.txt.
+
+HOW MANY WORDS?  Quality beats quantity.
+  English: a good dictionary is 200k-500k words. 10 million would be mostly typos and junk.
+  Arabic:  inflection makes real surface forms far more numerous; 1-5 million forms from a large corpus
+           is realistic. Use --min-count 3 (or higher) on web text so typos are discarded.
+  The engine handles 10M+ entries (~90 MB RAM), but only add what is real.
+
+WHERE TO GET THEM (check each licence before redistributing; verify the current download pages)
+  Arabic:  Arabic Wikipedia dump (dumps.wikimedia.org/arwiki) -> use as --corpus
+           CC-100 Arabic and OSCAR Arabic (large web-crawl text, free) -> --corpus, high --min-count
+           OpenSubtitles Arabic via OPUS (opus.nlpl.eu): conversational/dialect words
+           hermitdave/FrequencyWords on GitHub: ready-made Arabic frequency lists (--counts)
+           Leipzig Corpora Collection (wortschatz.uni-leipzig.de): Arabic news/web word lists
+           Ayaspell (Arabic Hunspell dictionary) -> --list (expand affixes with Hunspell's unmunch for more forms)
+           Tashkeela corpus: diacritised classical text
+  English: SCOWL (wordlist.aspell.net), dwyl/english-words (words_alpha.txt), hermitdave/FrequencyWords,
+           Google Books Ngrams (frequency), Wiktionary dumps, Hunspell en_US/en_GB .dic
+Tip: build Arabic from a frequency source (--counts/--ordered/--corpus) rather than a bare list - the frequency
+rank lets KeyMind tell common words from rare ones, which drives accuracy.

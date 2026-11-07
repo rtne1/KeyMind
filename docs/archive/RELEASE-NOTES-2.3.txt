@@ -1,0 +1,10 @@
+KeyMind v2.3 – Listener reliability repair
+
+- Uses a dedicated Windows message-pump thread for low-level keyboard and mouse hooks, independent from the UI.
+- Moves dictionary scoring outside of the keyboard callback.
+- Automatically refreshes listener registration every 20 seconds to recover from Windows silent hook removal.
+- Adds a manual Restart listener button in Diagnostics.
+- Keeps Arabic/English physical keyboard mapping and no-cloud processing.
+- Existing settings remain in %LOCALAPPDATA%\KeyMind\settings.json.
+
+NOTE: Windows compilation/runtime cannot be executed in this Linux environment; test on a Windows PC. Build-Log.txt warning CS0169 is non-fatal.

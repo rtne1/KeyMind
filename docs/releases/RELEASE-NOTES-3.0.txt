@@ -1,0 +1,28 @@
+KeyMind 3.0 - smarter recognition engine
+=========================================
+
+WHAT CHANGED
+1. Two-sided scoring. The physical key stream was already used (2.3). 3.0 now scores BOTH readings of
+   every word: lexical strength (in dictionary? how common? Arabic clitics/English inflections/
+   contractions) and a language likelihood ratio (does the converted text fit its language better than
+   what was typed fits its own?). This fixes words that are in NO dictionary (names, new terms).
+2. Rare dictionary entries (CMUdict junk like "gym", "shum") no longer veto a correct conversion of a
+   common word in the other language; only genuinely common words are protected.
+3. "hello," / "yes." / "don't" are recognised as English (the , . ; ' keys are Arabic letters otherwise).
+4. Bug fix: on the English layout Shift+; ' , . / [ ] ` types a symbol, not a letter key; it now ends the word.
+5. Dictionaries scale to millions of words: compact binary .kmd (9 bytes/word, 10M words = ~90 MB, instant
+   load) built by tools/build_dictionary.py. Drop-in: files named en-* / ar-* in data\, data\extra\ or
+   %LOCALAPPDATA%\KeyMind\dictionaries\ are merged automatically. See DICTIONARIES.txt.
+6. Arabic diacritics/tatweel are ignored in lookups.
+
+MEASURED (tests/eval_accuracy.py, held-out words, Python model of the engine)
+   English-layout gibberish wrongly converted:   12.0% -> 1.0%
+   Arabic known words recovered:                 99.3% -> 99.6%
+   English typed on Arabic layout recovered:     99.9% -> 99.9%
+   Correct English / Arabic left alone:          100%  -> 100% / 99.9%
+   Arabic words NEVER seen by the dictionary:    62.3% -> 49.5%   (deliberate: far fewer wrong edits)
+   With only 1,100 Arabic words the unseen-word recall is 58%; it keeps rising with more data
+   (tests/eval_scaling.py). The shipped Arabic list is small - a big Arabic dictionary is the main upgrade.
+
+NOT VERIFIED HERE: the C# could not be compiled on Linux. Run TEST-ENGINE.cmd on Windows first; it checks
+the C# engine against 480 vectors produced by the Python model and must print "Failures: 0".

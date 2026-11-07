@@ -1,0 +1,8 @@
+KeyMind dictionary attribution
+
+- en-frequency.txt is compiled from TextBlob's en-spelling.txt (Word frequency lexicon), using public-domain literary corpora and frequency lists. TextBlob is MIT licensed: https://github.com/sloria/TextBlob
+- en-extended.txt extends the original bundled word list with CMU Pronouncing Dictionary word forms (CMUDict), https://github.com/cmusphinx/cmudict . CMUDict is distributed under a BSD-style licence: https://github.com/cmusphinx/cmudict/blob/master/LICENSE
+- Supplemental Arabic stop words were sourced from spaCy's Arabic-language resources (MIT license): https://github.com/explosion/spaCy .
+- Additional Arabic and English terminology was curated for this app.
+
+Retain upstream notices when redistributing data beyond testing.
