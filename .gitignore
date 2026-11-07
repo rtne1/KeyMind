@@ -1,0 +1,35 @@
+# C# / Visual Studio
+bin/
+obj/
+.vs/
+*.user
+*.suo
+*.pdb
+TestResults/
+
+# Compiled application and local logs
+KeyMind.exe
+KeyMind.Tests.exe
+Build-Log.txt
+*.log
+*.tmp
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+
+# Local settings and user dictionaries
+settings.json
+error.log
+data/extra/
+data/*.kmd
+data/*.ngram
+
+# OS and editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
